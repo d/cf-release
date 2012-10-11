@@ -125,5 +125,18 @@ http {
       # Download the file and send it to client
       proxy_pass $download_url;
     }
+
+    location ~ ^/dea_next/http://([^/]+)/(.*){
+      # only allow internal redirects
+      internal;
+
+      set $dir_server_host $1;
+      set $download_path $2;
+      proxy_set_header Host $dir_server_host;
+      rewrite ^/dea_next/.* /$download_path break;
+
+      # Download the file and send it to client
+      proxy_pass http://jesse.<%= properties.domain %>;
+    }
   }
 }
